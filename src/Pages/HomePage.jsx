@@ -9,15 +9,14 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
+import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import React from "react";
+import React, { useState } from "react";
 import SideNavbar from "../components/Sidebar";
-import styled from "@emotion/styled";
 
 const HomePage = () => {
+  const [order, setOrder] = useState([]);
+  const [seletedproduct, setSeletedproduct] = useState({});
   const serverSpecification = [
     {
       index: 1,
@@ -53,6 +52,17 @@ const HomePage = () => {
     },
   ];
 
+  function handleBuynowClick(item) {
+    setSeletedproduct(item);
+    setOrder([...order, seletedproduct]);
+    console.log("Order details");
+    console.log(item + item.tag);
+    console.log("Orders" + order);
+
+    setSeletedproduct({});
+    return 0;
+  }
+
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -61,15 +71,28 @@ const HomePage = () => {
           <Typography sx={{ marginBottom: 5 }}>Home Page</Typography>
 
           {/* Products Specification */}
-          <Box sx={{ display: "flex", flexWrap: "wrap" }} gap={3}>
+          <Box
+            sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+            gap={3}
+          >
             {serverSpecification.map((item) => (
-              <Card key={item.index} sx={{ minWidth: 345, minHeight: 400 }}>
+              <Card
+                key={item.index}
+                sx={{
+                  minWidth: 345,
+                  minHeight: 400,
+                  ":hover": { bgcolor: "#e9f7ff" },
+                }}
+              >
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {item.tag}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: "text.secondary", marginTop:3 }}>
-                    <Table >
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "text.secondary", marginTop: 3 }}
+                  >
+                    <Table>
                       <TableBody>
                         <TableRow>
                           <TableCell component="th" scope="row">
@@ -99,8 +122,14 @@ const HomePage = () => {
                     </Table>
                   </Typography>
                 </CardContent>
-                <CardActions>
-                  <Button size="small" sx={{ alignSelf: "center" }}>
+                <CardActions sx={{ justifyContent: "center" }}>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginTop: 3 }}
+                    onClick={() => handleBuynowClick(item)}
+                  >
                     Buy Now
                   </Button>
                 </CardActions>

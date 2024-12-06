@@ -9,8 +9,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -19,16 +18,20 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ListItemAvatar } from "@mui/material";
+import { Collapse, Tooltip } from "@mui/material";
 
 const drawerWidth = 240;
 
 const MenuItems = [
-  { title: "Home", icon: HomeIcon, link: "/" },
+  { title: "Home", icon: HomeIcon, link: "/dashboard" },
   { title: "Orders", icon: ShoppingCartIcon, link: "/orders" },
 ];
+const balance = 6000;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -112,9 +115,10 @@ export default function SideNavbar() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   const handleDrawerOpen = () => {
-    !open ? setOpen(true) : setOpen(false);
+    setOpen(!open);
   };
 
   return (
@@ -130,6 +134,7 @@ export default function SideNavbar() {
           >
             {open ? <MenuOpenIcon /> : <MenuIcon />}
           </IconButton>
+
           <Typography variant="h6" noWrap component="div">
             Danny Software
           </Typography>
@@ -139,6 +144,52 @@ export default function SideNavbar() {
         <List sx={{ marginTop: 8 }}>
           {MenuItems.map((item) => (
             <ListItem key={item.title} disablePadding sx={{ display: "block" }}>
+              <Tooltip title={item.title} placement="right">
+                <ListItemButton
+                  sx={[
+                    {
+                      minHeight: 48,
+                      px: 2.5,
+                    },
+                    open
+                      ? { justifyContent: "initial" }
+                      : { justifyContent: "center" },
+                  ]}
+                  onClick={() => {
+                    navigate(item.link);
+                  }}
+                >
+                  <ListItemIcon
+                    sx={[
+                      {
+                        minWidth: 0,
+                        justifyContent: "center",
+                      },
+                      open
+                        ? {
+                            mr: 3,
+                          }
+                        : {
+                            mr: "auto",
+                          },
+                    ]}
+                  >
+                    <item.icon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.title}
+                    sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                  />
+                </ListItemButton>
+              </Tooltip>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+
+        <List>
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <Tooltip title={`Balance - ₹ ${balance}`} placement="right">
               <ListItemButton
                 sx={[
                   {
@@ -146,11 +197,50 @@ export default function SideNavbar() {
                     px: 2.5,
                   },
                   open
+                    ? { justifyContent: "initial", bgcolor: "#b1ff9a" }
+                    : { justifyContent: "center" },
+                ]}
+              >
+                <ListItemIcon
+                  sx={[
+                    {
+                      minWidth: 0,
+                      justifyContent: "center",
+                    },
+                    open
+                      ? {
+                          mr: 3,
+                        }
+                      : {
+                          mr: "auto",
+                          color: "#b1ff9a",
+                        },
+                  ]}
+                >
+                  <AccountBalanceWalletIcon fontSize="medium" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={`₹ ${balance}`}
+                  sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                />
+              </ListItemButton>
+            </Tooltip>
+          </ListItem>
+
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <Tooltip title="Account" placement="right">
+              <ListItemButton
+                sx={[
+                  {
+                    minHeight: 60,
+                    px: 2.5,
+                  },
+                  open
                     ? { justifyContent: "initial" }
                     : { justifyContent: "center" },
                 ]}
                 onClick={() => {
-                  navigate(item.link);
+                  setAccountOpen(!accountOpen);
                 }}
               >
                 <ListItemIcon
@@ -168,35 +258,61 @@ export default function SideNavbar() {
                         },
                   ]}
                 >
-                  <item.icon />
+                  <AccountCircleIcon fontSize="medium" />
                 </ListItemIcon>
-                <ListItemText
-                  primary={item.title}
-                  sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
 
-        <List>
-          <ListItem sx={{ display: "absolute" }}>
-            <AccountCircleIcon sx={{ marginRight: 4 }} />
-            <ListItemText
-              primary="Oui Oui"
-              secondary={
-                <>
-                  <Typography
-                    component="span"
-                    variant="body2"
-                    sx={{ color: "text.primary", display: "inline" }}
+                <ListItemText
+                  sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                  primary="UserName"
+                  secondary={
+                    <>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        sx={{ color: "text.primary", display: "inline" }}
+                      >
+                        user@gmail.com
+                      </Typography>
+                    </>
+                  }
+                />
+                {accountOpen ? (
+                  <ExpandLessIcon
+                    sx={[open ? { display: "bolck" } : { display: "none" }]}
+                  />
+                ) : (
+                  <ExpandMoreIcon
+                    sx={[open ? { display: "bolck" } : { display: "none" }]}
+                  />
+                )}
+              </ListItemButton>
+            </Tooltip>
+
+            <Collapse in={accountOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <Tooltip title="Logout" placement="right">
+                  <ListItemButton
+                    sx={[
+                      { pl: 4 },
+                      open
+                        ? { bgcolor: "#ff8181", ":hover": { color: "#ff8181" } }
+                        : { bgcolor: "none" },
+                    ]}
                   >
-                    Sandra Adams
-                  </Typography>
-                </>
-              }
-            />
+                    <ListItemIcon>
+                      <LogoutIcon
+                        sx={[
+                          open
+                            ? {}
+                            : { color: "#ff8181", ":hover": { color: "" } },
+                        ]}
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </ListItemButton>
+                </Tooltip>
+              </List>
+            </Collapse>
           </ListItem>
         </List>
       </Drawer>
