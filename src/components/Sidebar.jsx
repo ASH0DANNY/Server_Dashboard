@@ -21,8 +21,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Collapse, Tooltip } from "@mui/material";
 
 const drawerWidth = 240;
@@ -30,6 +30,7 @@ const drawerWidth = 240;
 const MenuItems = [
   { title: "Home", icon: HomeIcon, link: "/dashboard" },
   { title: "Orders", icon: ShoppingCartIcon, link: "/orders" },
+  {title:"Temp", icon:ShoppingCartIcon, link:"/profile"}
 ];
 const balance = 6000;
 
@@ -114,6 +115,9 @@ const Drawer = styled(MuiDrawer, {
 export default function SideNavbar() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [currentLocation, setCurrentLocation] = useState("");
+  const [active, setActive] = useState(false);
   const [open, setOpen] = useState(true);
   const [accountOpen, setAccountOpen] = useState(false);
 
@@ -121,10 +125,14 @@ export default function SideNavbar() {
     setOpen(!open);
   };
 
+  useEffect(() => {
+    setCurrentLocation(location.pathname.toString());
+  }, [location.pathname]);
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ width: "100%" }} open={open}>
+      <AppBar position="fixed" sx={{ width: "100%", bgcolor:"#000", color:"#fff" }} open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -154,6 +162,8 @@ export default function SideNavbar() {
                     open
                       ? { justifyContent: "initial" }
                       : { justifyContent: "center" },
+
+                    currentLocation === item.link ? { bgcolor: "#59a1ff" } : {},
                   ]}
                   onClick={() => {
                     navigate(item.link);

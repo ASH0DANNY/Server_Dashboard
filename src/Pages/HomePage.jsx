@@ -4,9 +4,12 @@ import {
   Card,
   CardActions,
   CardContent,
+  Chip,
   Typography,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -68,25 +71,32 @@ const HomePage = () => {
       <Box sx={{ display: "flex" }}>
         <SideNavbar />
         <Box sx={{ flexGrow: 1, p: 3, marginTop: 8 }}>
-          <Typography sx={{ marginBottom: 5 }}>Home Page</Typography>
+          <Typography variant="h5" sx={{ marginBottom: 5, bgcolor:"#59a1ff" }}>Products</Typography>
 
           {/* Products Specification */}
           <Box
             sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
             gap={3}
           >
-            {serverSpecification.map((item) => (
+            {serverSpecification.map((item, index) => (
               <Card
                 key={item.index}
-                sx={{
-                  minWidth: 345,
-                  minHeight: 400,
-                  ":hover": { bgcolor: "#e9f7ff" },
-                }}
+                sx={[
+                  {
+                    minWidth: 345,
+                    minHeight: 400,
+                    ":hover": { bgcolor: "#e9d6ff" },
+                  },
+                ]}
               >
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
-                    {item.tag}
+                    <Chip
+                      variant="outlined"
+                      color="info"
+                      icon={<BookmarkIcon />}
+                      label={item.tag}
+                    />
                   </Typography>
                   <Typography
                     variant="body2"
