@@ -71,11 +71,27 @@ const HomePage = () => {
       <Box sx={{ display: "flex" }}>
         <SideNavbar />
         <Box sx={{ flexGrow: 1, p: 3, marginTop: 8 }}>
-          <Typography variant="h5" sx={{ marginBottom: 5, bgcolor:"#59a1ff" }}>Products</Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              marginBottom: 5,
+              bgcolor: "#59a1ff",
+              py: 1,
+              px: 4,
+              borderRadius: 3,
+            }}
+          >
+            Products
+          </Typography>
 
           {/* Products Specification */}
           <Box
-            sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+            sx={{
+              marginTop: 6,
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
             gap={3}
           >
             {serverSpecification.map((item, index) => (
