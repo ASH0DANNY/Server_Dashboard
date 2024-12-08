@@ -91,7 +91,7 @@ const HomePage = () => {
               display: "flex",
               flexWrap: "wrap",
               justifyContent: "center",
-            }}
+            }} 
             gap={3}
           >
             {serverSpecification.map((item, index) => (
