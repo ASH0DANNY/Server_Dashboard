@@ -21,6 +21,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CategoryIcon from "@mui/icons-material/Category";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Collapse, Tooltip } from "@mui/material";
@@ -30,7 +31,7 @@ const drawerWidth = 240;
 const MenuItems = [
   { title: "Home", icon: HomeIcon, link: "/dashboard" },
   { title: "Orders", icon: ShoppingCartIcon, link: "/orders" },
-  {title:"Temp", icon:ShoppingCartIcon, link:"/profile"}
+  { title: "Products", icon: CategoryIcon, link: "/products" },
 ];
 const balance = 6000;
 
@@ -132,7 +133,11 @@ export default function SideNavbar() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ width: "100%", bgcolor:"#000", color:"#fff" }} open={open}>
+      <AppBar
+        position="fixed"
+        sx={{ width: "100%", bgcolor: "#000", color: "#fff" }}
+        open={open}
+      >
         <Toolbar>
           <IconButton
             color="inherit"

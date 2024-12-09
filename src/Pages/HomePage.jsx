@@ -14,46 +14,27 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideNavbar from "../components/Sidebar";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../Firebase";
 
 const HomePage = () => {
   const [order, setOrder] = useState([]);
   const [seletedproduct, setSeletedproduct] = useState({});
-  const serverSpecification = [
-    {
-      index: 1,
-      tag: "Best Seller",
-      ram: "8 GB",
-      memory: "256 GB",
-      validity: "5 year",
-      price: 3500,
-    },
-    {
-      index: 2,
-      tag: "Best Value",
-      ram: "4 GB",
-      memory: "256 GB",
-      validity: "5 year",
-      price: 4000,
-    },
-    {
-      index: 3,
-      tag: "Premium",
-      ram: "16 GB",
-      memory: "1 TB",
-      validity: "10 year",
-      price: 8500,
-    },
-    {
-      index: 4,
-      tag: "Standard",
-      ram: "12 GB",
-      memory: "512 GB",
-      validity: "10 year",
-      price: 6500,
-    },
-  ];
+  const [serverSpecification, setServerSpecification] = useState([]);
+  const productsRef = collection(db, "products");
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  const getProducts = async () => {
+    const temp = await getDocs(productsRef);
+    setServerSpecification(
+      temp.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+    );
+  };
 
   function handleBuynowClick(item) {
     setSeletedproduct(item);
@@ -91,7 +72,7 @@ const HomePage = () => {
               display: "flex",
               flexWrap: "wrap",
               justifyContent: "center",
-            }} 
+            }}
             gap={3}
           >
             {serverSpecification.map((item, index) => (
