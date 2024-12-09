@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import { db } from "../Firebase";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -26,6 +27,13 @@ const ProductsPage = () => {
   const [user, setUser] = useState("user");
   const [backDtopOpen, setBackDtopOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const [inputIndex, setInputIndex] = useState(0);
+  const [inputTag, setInputTag] = useState("");
+  const [inputRam, setInputRam] = useState("");
+  const [inputMemory, setInputMemory] = useState("");
+  const [inputValidity, setInputValidity] = useState("");
+  const [inputPrice, setInputPrice] = useState(0);
+  const [inputValue, setInputValue] = useState({});
   const productsRef = collection(db, "products");
 
   useEffect(() => {
@@ -46,11 +54,30 @@ const ProductsPage = () => {
     setPage(0);
   };
 
-  const handleBackdropClose = () => {
+  const handleBackdropClick = (item) => {
     setBackDtopOpen(!backDtopOpen);
+
+    setInputIndex(item.index);
+    setInputTag(item.tag);
+    setInputRam(item.ram);
+    setInputMemory(item.memory);
+    setInputValidity(item.validity);
+    setInputPrice(item.price);
   };
 
-  const ViewBlock = ({ index, tag, ram, memory, validity, price }) => {
+  const handleAddProduct = () => {
+    setInputValue({
+      index: inputIndex,
+      tag: inputTag,
+      ram: inputRam,
+      memory: inputMemory,
+      validity: inputValidity,
+      price: inputPrice,
+    });
+    console.log("inputValue: " + inputValue);
+  };
+
+  const ViewBlock = () => {
     setUser("admin");
     return (
       <>
@@ -63,47 +90,55 @@ const ProductsPage = () => {
               id="outlined"
               label="Index"
               placeholder="Index.."
-              value={index}
+              value={inputIndex}
+              onChange={(e) => setInputIndex(e.target.value)}
               sx={{ width: "100%", my: 2 }}
             />
             <TextField
               id="outlined"
               label="Tag"
               placeholder="Tag.."
-              value={tag}
+              value={inputTag}
+              onChange={(e) => setInputTag(e.target.value)}
               sx={{ width: "100%", my: 2 }}
             />
             <TextField
               id="outlined"
               label="Ram"
               placeholder="Ram.."
-              value={ram}
+              value={inputRam}
+              onChange={(e) => setInputRam(e.target.value)}
               sx={{ width: "100%", my: 2 }}
             />
             <TextField
               id="outlined"
               label="Memory"
               placeholder="Memory.."
-              value={memory}
+              value={inputMemory}
+              onChange={(e) => setInputMemory(e.target.value)}
               sx={{ width: "100%", my: 2 }}
             />
             <TextField
               id="outlined"
               label="Validity"
               placeholder="Validity.."
-              value={validity}
+              value={inputValidity}
+              onChange={(e) => setInputValidity(e.target.value)}
               sx={{ width: "100%", my: 2 }}
             />
             <TextField
               id="outlined"
               label="Price"
               placeholder="Price.."
-              value={price}
+              value={inputPrice}
+              onChange={(e) => setInputPrice(e.target.value)}
               sx={{ width: "100%", my: 2 }}
             />
 
             {user === "admin" ? (
-              <Button variant="contained">Save</Button>
+              <Button variant="contained" onClick={handleAddProduct}>
+                Save
+              </Button>
             ) : null}
           </Box>
         </Box>
@@ -112,7 +147,7 @@ const ProductsPage = () => {
   };
 
   const tableHeader = [
-    { id: "index", label: "#", minWidth: 100 },
+    { id: "index", label: "#", minWidth: 90 },
     {
       id: "tag",
       label: "Tag",
@@ -122,31 +157,31 @@ const ProductsPage = () => {
     {
       id: "ram",
       label: "Ram",
-      minWidth: 120,
+      minWidth: 150,
       align: "left",
     },
     {
       id: "memory",
       label: "Memory",
-      minWidth: 170,
+      minWidth: 150,
       align: "left",
     },
     {
       id: "validity",
       label: "Validity",
-      minWidth: 100,
+      minWidth: 150,
       align: "left",
     },
     {
       id: "price",
       label: "Price",
-      minWidth: 100,
+      minWidth: 150,
       align: "left",
     },
     {
-      id: "Btn",
-      label: "Edit",
-      minWidth: 170,
+      id: "btn",
+      label: "",
+      minWidth: 100,
       align: "right",
     },
   ];
@@ -163,13 +198,12 @@ const ProductsPage = () => {
       <>
         <Button
           variant="contained"
-          onClick={() =>
-            handleBackdropClose({ index, tag, ram, memory, validity, price })
-          }
+          sx={{ mx: 1 }}
+          onClick={() => handleBackdropClick(item)}
         >
           View
         </Button>
-        <Button>
+        <Button color="error">
           <DeleteIcon />
         </Button>
       </>
@@ -204,6 +238,12 @@ const ProductsPage = () => {
             }}
           >
             Products Page
+          </Typography>
+          <Typography sx={{ my: 2, p: 2 }}>
+            <Button variant="contained" onClick={() => handleBackdropClick("")}>
+              Add Product
+              <AddIcon sx={{ ml: 1 }} />
+            </Button>
           </Typography>
           {/* All orders table */}
           <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -262,7 +302,7 @@ const ProductsPage = () => {
           <Backdrop
             sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
             open={backDtopOpen}
-            onClick={handleBackdropClose}
+            onClick={handleBackdropClick}
           >
             <ViewBlock />
           </Backdrop>
