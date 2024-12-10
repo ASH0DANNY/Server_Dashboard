@@ -18,7 +18,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { db } from "../Firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 
 const ProductsPage = () => {
   const [rows, setRows] = useState([]);
@@ -33,8 +33,9 @@ const ProductsPage = () => {
   const [inputMemory, setInputMemory] = useState("");
   const [inputValidity, setInputValidity] = useState("");
   const [inputPrice, setInputPrice] = useState(0);
-  const [inputValue, setInputValue] = useState({});
   const productsRef = collection(db, "products");
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString();
 
   useEffect(() => {
     getProducts();
@@ -54,9 +55,11 @@ const ProductsPage = () => {
     setPage(0);
   };
 
-  const handleBackdropClick = (item) => {
+  const handleBackdropClick = () => {
     setBackDtopOpen(!backDtopOpen);
-
+  };
+  const handleEditProduct = (item) => {
+    handleBackdropClick();
     setInputIndex(item.index);
     setInputTag(item.tag);
     setInputRam(item.ram);
@@ -65,16 +68,29 @@ const ProductsPage = () => {
     setInputPrice(item.price);
   };
 
-  const handleAddProduct = () => {
-    setInputValue({
+  const handleAddProduct = (e) => {
+    e.preventDefault();
+
+    handleBackdropClick();
+    const newProductData = {
       index: inputIndex,
       tag: inputTag,
       ram: inputRam,
       memory: inputMemory,
       validity: inputValidity,
       price: inputPrice,
-    });
-    console.log("inputValue: " + inputValue);
+      createDate: formattedDate,
+    };
+
+    try {
+      let response = addDoc(productsRef, newProductData);
+      console.log(
+        "Data added => response: " + response.then(console.log(response.data()))
+      );
+      getProducts();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const ViewBlock = () => {
@@ -87,7 +103,10 @@ const ProductsPage = () => {
           <Typography>Product Details</Typography>
           <Box sx={{ width: 300, mx: 4 }}>
             <TextField
-              id="outlined"
+              margin="normal"
+              required
+              fullWidth
+              autoFocus
               label="Index"
               placeholder="Index.."
               value={inputIndex}
@@ -199,7 +218,7 @@ const ProductsPage = () => {
         <Button
           variant="contained"
           sx={{ mx: 1 }}
-          onClick={() => handleBackdropClick(item)}
+          onClick={() => handleEditProduct(item)}
         >
           View
         </Button>
@@ -240,7 +259,7 @@ const ProductsPage = () => {
             Products Page
           </Typography>
           <Typography sx={{ my: 2, p: 2 }}>
-            <Button variant="contained" onClick={() => handleBackdropClick("")}>
+            <Button variant="contained" onClick={() => handleBackdropClick()}>
               Add Product
               <AddIcon sx={{ ml: 1 }} />
             </Button>

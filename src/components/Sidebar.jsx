@@ -25,15 +25,17 @@ import CategoryIcon from "@mui/icons-material/Category";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Collapse, Tooltip } from "@mui/material";
+import { auth, db } from "../Firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const drawerWidth = 240;
 
 const MenuItems = [
-  { title: "Home", icon: HomeIcon, link: "/dashboard" },
-  { title: "Orders", icon: ShoppingCartIcon, link: "/orders" },
-  { title: "Products", icon: CategoryIcon, link: "/products" },
+  { title: "Home", icon: HomeIcon, link: "/dashboard", access: "user" },
+  { title: "Orders", icon: ShoppingCartIcon, link: "/orders", access: "user" },
+  { title: "Products", icon: CategoryIcon, link: "/products", access: "admin" },
+  { title: "Clients", icon: CategoryIcon, link: "/clients", access: "admin" },
 ];
-const balance = 6000;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -118,15 +120,36 @@ export default function SideNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentLocation, setCurrentLocation] = useState("");
-  const [active, setActive] = useState(false);
   const [open, setOpen] = useState(true);
+  const [userDetails, setUserDetails] = useState(null);
   const [accountOpen, setAccountOpen] = useState(false);
+
+  const handleLogoutClick = async () => {
+    await auth.signOut();
+    navigate("/");
+  };
 
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
 
+  const fetchUserData = () => {
+    auth.onAuthStateChanged(async (user) => {
+      const docRef = await doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        console.log("docSnap.data():" + docSnap.data());
+
+        setUserDetails(docSnap.data());
+      } else {
+        console.log("User is not logged in");
+      }
+    });
+  };
+
   useEffect(() => {
+    fetchUserData();
     setCurrentLocation(location.pathname.toString());
   }, [location.pathname]);
 
@@ -149,7 +172,7 @@ export default function SideNavbar() {
           </IconButton>
 
           <Typography variant="h6" noWrap component="div">
-            Danny Software
+            VPS Master
           </Typography>
         </Toolbar>
       </AppBar>
@@ -204,7 +227,10 @@ export default function SideNavbar() {
 
         <List>
           <ListItem disablePadding sx={{ display: "block" }}>
-            <Tooltip title={`Balance - ₹ ${balance}`} placement="right">
+            <Tooltip
+              title={`Balance - ₹ ${userDetails ? userDetails.balance : 0}`}
+              placement="right"
+            >
               <ListItemButton
                 sx={[
                   {
@@ -235,7 +261,7 @@ export default function SideNavbar() {
                   <AccountBalanceWalletIcon fontSize="medium" />
                 </ListItemIcon>
                 <ListItemText
-                  primary={`₹ ${balance}`}
+                  primary={`₹ ${userDetails ? userDetails.balance : 0}`}
                   sx={[open ? { opacity: 1 } : { opacity: 0 }]}
                 />
               </ListItemButton>
@@ -278,7 +304,7 @@ export default function SideNavbar() {
 
                 <ListItemText
                   sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                  primary="UserName"
+                  primary={userDetails ? userDetails.name : "username"}
                   secondary={
                     <>
                       <Typography
@@ -286,7 +312,7 @@ export default function SideNavbar() {
                         variant="body2"
                         sx={{ color: "text.primary", display: "inline" }}
                       >
-                        user@gmail.com
+                        {userDetails ? userDetails.email : "user@gmail.com"}
                       </Typography>
                     </>
                   }
@@ -313,6 +339,7 @@ export default function SideNavbar() {
                         ? { bgcolor: "#ff8181", ":hover": { color: "#ff8181" } }
                         : { bgcolor: "none" },
                     ]}
+                    onClick={handleLogoutClick}
                   >
                     <ListItemIcon>
                       <LogoutIcon
