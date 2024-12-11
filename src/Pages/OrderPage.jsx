@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Chip,
+  Dialog,
   Paper,
   Table,
   TableBody,
@@ -17,14 +18,12 @@ import {
   Typography,
 } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import PersonIcon from "@mui/icons-material/Person";
-import PasswordIcon from "@mui/icons-material/Password";
 
 const OrderPage = () => {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [backDtopOpen, setBackDtopOpen] = useState(false);
+  const [dilogBoxOpen, setDilogBoxOpen] = useState(false);
   const [serverSpec, setServerSpec] = useState({});
   const [serverData, setserverData] = useState({
     serverUname: "",
@@ -119,7 +118,7 @@ const OrderPage = () => {
   ];
 
   const handleBackdropClose = (serverSpecs, serverCred, preBalance) => {
-    setBackDtopOpen(!backDtopOpen);
+    setDilogBoxOpen(!dilogBoxOpen);
     setServerSpec(serverSpecs);
     setserverData({
       serverUname: serverCred.serverUname,
@@ -319,13 +318,13 @@ const OrderPage = () => {
           </Paper>
 
           {/* server username and  password */}
-          <Backdrop
+          <Dialog
             sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-            open={backDtopOpen}
+            open={dilogBoxOpen}
             onClick={handleBackdropClose}
           >
             <ViewBlock />
-          </Backdrop>
+          </Dialog>
         </Box>
       </Box>
     </>
