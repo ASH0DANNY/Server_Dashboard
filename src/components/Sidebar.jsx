@@ -22,6 +22,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CategoryIcon from "@mui/icons-material/Category";
+import GroupsIcon from "@mui/icons-material/Groups";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Collapse, Tooltip } from "@mui/material";
@@ -29,13 +30,6 @@ import { auth, db } from "../Firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 const drawerWidth = 240;
-
-const MenuItems = [
-  { title: "Home", icon: HomeIcon, link: "/dashboard", access: "user" },
-  { title: "Orders", icon: ShoppingCartIcon, link: "/orders", access: "user" },
-  { title: "Products", icon: CategoryIcon, link: "/products", access: "admin" },
-  { title: "Clients", icon: CategoryIcon, link: "/clients", access: "admin" },
-];
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -135,7 +129,7 @@ export default function SideNavbar() {
 
   const fetchUserData = () => {
     auth.onAuthStateChanged(async (user) => {
-      const docRef = await doc(db, "users", user.uid);
+      const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -152,6 +146,11 @@ export default function SideNavbar() {
     fetchUserData();
     setCurrentLocation(location.pathname.toString());
   }, [location.pathname]);
+
+  const MenuItems = [
+    { title: "Home", icon: HomeIcon, link: "/dashboard" },
+    { title: "Orders", icon: ShoppingCartIcon, link: "/orders" },
+  ];
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -304,7 +303,7 @@ export default function SideNavbar() {
 
                 <ListItemText
                   sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                  primary={userDetails ? userDetails.name : "username"}
+                  primary={userDetails ? userDetails.name : "--"}
                   secondary={
                     <>
                       <Typography
@@ -312,7 +311,7 @@ export default function SideNavbar() {
                         variant="body2"
                         sx={{ color: "text.primary", display: "inline" }}
                       >
-                        {userDetails ? userDetails.email : "user@gmail.com"}
+                        {userDetails ? userDetails.email : "--"}
                       </Typography>
                     </>
                   }

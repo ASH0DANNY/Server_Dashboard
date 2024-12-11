@@ -54,7 +54,7 @@ const SignUpPage = () => {
         if (user) {
           await setDoc(doc(userRef, user.uid), signupData);
         }
-        console.log("Data added => response: ");
+        console.log("Data added: ");
       } catch (error) {
         console.log(error.message);
         setAlertMessage(error.message);

@@ -166,17 +166,15 @@ const OrderPage = () => {
     { id: "id", label: "Id", minWidth: 100 },
     {
       id: "client",
-      label: "Client",
+      label: "Name",
       minWidth: 170,
       align: "left",
-      format: (value) => value.toLocaleString("en-US"),
     },
     {
       id: "amount",
       label: "Amount",
       minWidth: 120,
       align: "left",
-      format: (value) => value.toLocaleString("en-US"),
     },
     {
       id: "date",
@@ -271,7 +269,7 @@ const OrderPage = () => {
           <Paper sx={{ width: "100%", overflow: "hidden" }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">
-                <TableHead sx={{ bgcolor: "#000", color: "#fff" }}>
+                <TableHead style={{ backgroundColor: "#d1d1d1" }}>
                   <TableRow>
                     {tableHeader.map((column) => (
                       <TableCell

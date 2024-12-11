@@ -9,9 +9,7 @@ import HomePage from "./Pages/HomePage";
 import OrderPage from "./Pages/OrderPage";
 
 import SignUpPage from "./Pages/SignUpPage";
-import ProductsPage from "./Pages/ProductsPage";
 import { auth } from "./Firebase";
-import ClientsPage from "./Pages/ClientsPage";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -37,14 +35,6 @@ const App = () => {
           <Route
             path="/orders"
             element={user ? <OrderPage /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/products"
-            element={user ? <ProductsPage /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/clients"
-            element={user ? <ClientsPage /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>
