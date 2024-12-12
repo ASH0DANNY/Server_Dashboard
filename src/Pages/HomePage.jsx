@@ -29,7 +29,6 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../Firebase";
 import { useNavigate } from "react-router-dom";
-import ConfirmationAlert from "../utils/ConfirmAlert";
 import ConfirmationDialog from "../utils/ConfirmAlert";
 
 const HomePage = () => {
@@ -40,6 +39,8 @@ const HomePage = () => {
   const productsRef = collection(db, "products");
   const userRef = collection(db, "users");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString();
 
   const handleOpenDialog = () => {
     setIsDialogOpen(true);
@@ -97,7 +98,9 @@ const HomePage = () => {
 
       if (user) {
         await addDoc(orderRef, {
-          serverSpec: item.index,
+          productId: item.index,
+          orderDate: formattedDate,
+          orderValue: item.price,
           priorbalance: userDetails.balance,
           serverUname: "",
           serverPassword: "",
@@ -105,6 +108,7 @@ const HomePage = () => {
 
         await addDoc(transRef, {
           serverSpec: item.index,
+          orderDate: formattedDate,
           priorbalance: userDetails.balance,
           orderValue: item.price,
         });
@@ -337,7 +341,9 @@ const HomePage = () => {
                         sx={{ marginTop: 3 }}
                         onClick={() => {
                           setSeletedproduct(item);
-                          handleOpenDialog();
+                          item.price >= userDetails.balance
+                            ? alert("Can't complete your order!! Low Balance")
+                            : handleOpenDialog();
                         }}
                       >
                         Buy Now
@@ -348,6 +354,23 @@ const HomePage = () => {
               </Box>
             </>
           )}
+          <Box
+            sx={{
+              mt: 3,
+              width: "100%",
+              bgcolor: "#f2f2f2",
+              height: 60,
+              p: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "small",
+              wordSpacing: 2,
+              letterSpacing: 2,
+            }}
+          >
+            vpsmaster.in &copy; Allright Reserved 2024
+          </Box>
         </Box>
       </Box>
     </>
