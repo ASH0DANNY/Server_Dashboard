@@ -33,12 +33,12 @@ const OrderPage = () => {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        console.log("docSnap.data():" + docSnap.data());
+        // console.log(docSnap.data());
 
         setUserDetails(docSnap.data());
         let isuser = await userDetails.accessType;
         setUser(isuser);
-        console.log("userDetails.accessType: " + isuser);
+        // console.log("userDetails.accessType: " + isuser);
       } else {
         console.log("User is not logged in");
       }
@@ -74,7 +74,8 @@ const OrderPage = () => {
             setUserOrders(
               orderSnap.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
             );
-            console.log("userOrders: " + userOrders);
+            // console.log("userOrders: ");
+            // console.log(userOrders);
           } else {
             console.log("No order found of this user");
           }
@@ -89,7 +90,7 @@ const OrderPage = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", minHeight: "100vh" }}>
         <SideNavbar />
         <Box sx={{ flexGrow: 1, p: 3, marginTop: 8 }}>
           <Typography
@@ -191,6 +192,26 @@ const OrderPage = () => {
               </TableContainer>
             </>
           )}
+          <Box
+            sx={{
+              mt: 3,
+              width: "100%",
+              bgcolor: "#f2f2f2",
+              height: 60,
+              float: "bottom",
+              p: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "small",
+              wordSpacing: 2,
+              letterSpacing: 2,
+              position: "sticky",
+              bottom: 0,
+            }}
+          >
+            vpsmaster.in &copy; Allright Reserved 2024
+          </Box>
         </Box>
       </Box>
     </>

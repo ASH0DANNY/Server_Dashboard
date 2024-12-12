@@ -71,7 +71,8 @@ const AllOrders = () => {
       }
 
       setUsersWithOrders(usersData);
-      console.log("usersWithOrders:" + usersWithOrders);
+      console.log("usersWithOrders:");
+      console.log(usersWithOrders);
     } catch (error) {
       console.log(error.message);
     }
@@ -122,6 +123,13 @@ const AllOrders = () => {
     );
   };
 
+  //   const AllOrders= usersWithOrders.map((item)=>(
+  //     {
+  //         client:item.name,
+
+  //     }
+  //   )) ;
+
   const AllOrderDetails = [
     {
       orderId: "21",
@@ -136,7 +144,7 @@ const AllOrders = () => {
         validity: "10 year",
         price: 6500,
       },
-      orderDelevery: {
+      orders: {
         serverUname: "",
         serverPassword: "",
       },
@@ -154,7 +162,7 @@ const AllOrders = () => {
         validity: "10 year",
         price: 6500,
       },
-      orderDelevery: {
+      orders: {
         serverUname: "",
         serverPassword: "",
       },
@@ -172,7 +180,7 @@ const AllOrders = () => {
         validity: "5 year",
         price: 4000,
       },
-      orderDelevery: {
+      orders: {
         serverUname: "",
         serverPassword: "",
       },
@@ -191,7 +199,7 @@ const AllOrders = () => {
         validity: "10 year",
         price: 8500,
       },
-      orderDelevery: {
+      orders: {
         serverUname: "IronMan123",
         serverPassword: "IM123456",
       },
@@ -238,7 +246,7 @@ const AllOrders = () => {
     let amount = item.orderedServerSpec.price;
     let date = item.orderDate;
     const status =
-      item.orderDelevery.serverUname === "" ? (
+      item.orders.serverUname === "" ? (
         <Chip
           variant="outlined"
           color="error"
@@ -261,7 +269,7 @@ const AllOrders = () => {
         onClick={() =>
           handleBackdropClose(
             item.orderedServerSpec,
-            item.orderDelevery,
+            item.orders,
             item.priorBalance
           )
         }
@@ -336,6 +344,22 @@ const AllOrders = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      <Box>
+        {usersWithOrders.map((item) => (
+          <>
+            <Typography>userid: {item.userId}</Typography>
+            <Typography>name: {item.name}</Typography>
+            <Typography>email: {item.email}</Typography>
+            <Typography>balance: {item.balance}</Typography>
+            <Box>
+              orders count:{" "}
+              {item.orders.map((val) => (
+                <Typography>orderId: {val.orderId}</Typography>
+              ))}
+            </Box>
+          </>
+        ))}
+      </Box>
       {/* server username and  password */}
       <Dialog
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
