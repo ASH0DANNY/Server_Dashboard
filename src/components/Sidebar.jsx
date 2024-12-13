@@ -120,7 +120,7 @@ export default function SideNavbar() {
 
   const handleLogoutClick = async () => {
     await auth.signOut();
-    navigate("/");
+    navigate("/Server_Dashboard/");
   };
 
   const handleDrawerOpen = () => {
@@ -148,8 +148,12 @@ export default function SideNavbar() {
   }, [location.pathname]);
 
   const MenuItems = [
-    { title: "Home", icon: HomeIcon, link: "/dashboard" },
-    { title: "Orders", icon: ShoppingCartIcon, link: "/orders" },
+    { title: "Home", icon: HomeIcon, link: "/Server_Dashboard/dashboard" },
+    {
+      title: "Orders",
+      icon: ShoppingCartIcon,
+      link: "/Server_Dashboard/orders",
+    },
   ];
 
   return (

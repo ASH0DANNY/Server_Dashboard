@@ -26,15 +26,15 @@ const App = () => {
         <Routes>
           <Route
             path="/"
-            element={user ? <Navigate to="/dashboard" /> : <SignUpPage />}
+            element={user ? <Navigate to="/Server_Dashboard/dashboard" /> : <SignUpPage />}
           />
           <Route
-            path="/dashboard"
-            element={user ? <HomePage /> : <Navigate to="/" />}
+            path="/Server_Dashboard/dashboard"
+            element={user ? <HomePage /> : <Navigate to="/Server_Dashboard/" />}
           />
           <Route
-            path="/orders"
-            element={user ? <OrderPage /> : <Navigate to="/" />}
+            path="/Server_Dashboard/orders"
+            element={user ? <OrderPage /> : <Navigate to="/Server_Dashboard/" />}
           />
         </Routes>
       </Router>
