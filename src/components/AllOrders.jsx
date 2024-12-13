@@ -3,44 +3,33 @@ import {
   Typography,
   Box,
   Button,
-  Chip,
   Paper,
   TableContainer,
   Table,
   TableHead,
   TableRow,
-  TablePagination,
-  TextField,
   TableCell,
   TableBody,
+  Modal,
 } from "@mui/material";
 import { collection, getDocs } from "firebase/firestore";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import React, { useEffect, useState } from "react";
 import { db } from "../Firebase";
+import ViewUser from "./ViewUser";
 
 const AllOrders = () => {
   const [usersWithOrders, setUsersWithOrders] = useState([]);
-  const [user, setUser] = useState("");
-  const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [dilogBoxOpen, setDilogBoxOpen] = useState(false);
-  const [serverSpec, setServerSpec] = useState({});
-  const [serverData, setserverData] = useState({
+  const [open, setOpen] = useState(false);
+  const [usersData, setUsersData] = useState(null);
+  const [inputBalance, setInputBalance] = useState(null);
+  const [serverUname, setServerUname] = useState(null);
+  const [serverPassword, setServerPassword] = useState(null);
+  const [userOrders, setUserOrders] = useState(null);
+  const [userBalance, setUserBalance] = useState(null);
+  const [inputServerData, setInputServerData] = useState({
     serverUname: "",
     serverPassword: "",
   });
-  const [preBalance, setPreBalance] = useState(0);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   async function getAllOrdersDetails() {
     try {
@@ -82,292 +71,172 @@ const AllOrders = () => {
     getAllOrdersDetails();
   }, []);
 
-  const handleBackdropClose = (serverSpecs, serverCred, preBalance) => {
-    setDilogBoxOpen(!dilogBoxOpen);
-    setServerSpec(serverSpecs);
-    setserverData({
-      serverUname: serverCred.serverUname,
-      serverPassword: serverCred.serverPassword,
-    });
-    setPreBalance(preBalance);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+    getAllOrdersDetails();
+  };
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    minWidth: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
   };
 
-  const ViewBlock = () => {
-    return (
-      <>
-        <Box
-          sx={{ bgcolor: "#fff", color: "#000", padding: 3, borderRadius: 3 }}
-        >
-          <Typography>Server Details</Typography>
-          <Box sx={{ width: 300, height: 400, mx: 4 }}>
-            <TextField
-              id="outlined"
-              label="Username"
-              placeholder="Username.."
-              value={serverData.serverUname}
-              sx={{ width: "100%", my: 2 }}
-            />
-            <TextField
-              id="outlined"
-              label="Password"
-              placeholder="Password.."
-              value={serverData.serverPassword}
-              sx={{ width: "100%", my: 2 }}
-            />
-            <Typography>Prior Balance: {preBalance}</Typography>
+  // const MoreDetails = async () => {
+  //   return (
+  //     <Paper sx={{ p: 3, bgcolor: "ivory", width: "100%" }}>
+  //       <Typography>Balance: {await usersData.balance}</Typography>
+  //       <TextField type="text" label="Name" />
+  //       <TableContainer>
+  //         <Table stickyHeader aria-label="sticky table">
+  //           <TableHead style={{ backgroundColor: "#d1d1d1" }}>
+  //             <TableRow>
+  //               <TableCell style={{ maxWidth: 180 }} align="center">
+  //                 #
+  //               </TableCell>
+  //               <TableCell style={{ minWidth: 120 }} align="center">
+  //                 Date
+  //               </TableCell>
+  //               <TableCell style={{ minWidth: 120 }} align="right">
+  //                 OrderValue
+  //               </TableCell>
+  //               <TableCell style={{ minWidth: 120 }} align="right">
+  //                 ProductId
+  //               </TableCell>
+  //               <TableCell style={{ minWidth: 120 }} align="right">
+  //                 Status
+  //               </TableCell>
+  //               <TableCell style={{ minWidth: 180 }} align="right">
+  //                 S Username
+  //               </TableCell>
+  //               <TableCell style={{ minWidth: 180 }} align="right">
+  //                 S Password
+  //               </TableCell>
+  //             </TableRow>
+  //           </TableHead>
+  //           <TableBody>
+  //             {await userOrders.map((order) => (
+  //               <>
+  //                 <TableRow
+  //                   hover
+  //                   role="checkbox"
+  //                   tabIndex={-1}
+  //                   key={order.orderId}
+  //                 >
+  //                   <TableCell align="center">{order.orderId}</TableCell>
+  //                   <TableCell align="center">{order.orderDate}</TableCell>
+  //                   <TableCell align="center">{order.orderDate}</TableCell>
+  //                   <TableCell align="center">{order.orderDate}</TableCell>
+  //                   <TableCell align="center">{order.orderDate}</TableCell>
+  //                   <TableCell align="center">{order.orderValue}</TableCell>
+  //                   <TableCell align="center">{order.orderValue}</TableCell>
+  //                 </TableRow>
+  //               </>
+  //             ))}
+  //           </TableBody>
+  //         </Table>
+  //       </TableContainer>
+  //       <Button variant="contained" onClick={handleDialogBoxClose}>
+  //         Close
+  //       </Button>
+  //     </Paper>
+  //   );
+  // };
 
-            <Button variant="contained">Save</Button>
-          </Box>
-        </Box>
-      </>
-    );
+  const GetOrdersCount = (orders) => {
+    let count = 0;
+    orders.map(() => count++);
+    return count;
   };
-
-  //   const AllOrders= usersWithOrders.map((item)=>(
-  //     {
-  //         client:item.name,
-
-  //     }
-  //   )) ;
-
-  const AllOrderDetails = [
-    {
-      orderId: "21",
-      client: "John Wick",
-      orderDate: "15/11/2024",
-      priorBalance: 10000,
-      orderedServerSpec: {
-        index: 4,
-        tag: "Standard",
-        ram: "12 GB",
-        memory: "512 GB",
-        validity: "10 year",
-        price: 6500,
-      },
-      orders: {
-        serverUname: "",
-        serverPassword: "",
-      },
-    },
-    {
-      orderId: "17",
-      client: "Harry Potter",
-      orderDate: "2/12/2024",
-      priorBalance: 10000,
-      orderedServerSpec: {
-        index: 4,
-        tag: "Standard",
-        ram: "12 GB",
-        memory: "512 GB",
-        validity: "10 year",
-        price: 6500,
-      },
-      orders: {
-        serverUname: "",
-        serverPassword: "",
-      },
-    },
-    {
-      orderId: "05",
-      client: "Spider Man",
-      orderDate: "18/12/2024",
-      priorBalance: 8000,
-      orderedServerSpec: {
-        index: 2,
-        tag: "Best Value",
-        ram: "4 GB",
-        memory: "256 GB",
-        validity: "5 year",
-        price: 4000,
-      },
-      orders: {
-        serverUname: "",
-        serverPassword: "",
-      },
-    },
-
-    {
-      orderId: "11",
-      client: "Iron Man",
-      orderDate: "03/11/2024",
-      priorBalance: 10000,
-      orderedServerSpec: {
-        index: 3,
-        tag: "Premium",
-        ram: "16 GB",
-        memory: "1 TB",
-        validity: "10 year",
-        price: 8500,
-      },
-      orders: {
-        serverUname: "IronMan123",
-        serverPassword: "IM123456",
-      },
-    },
-  ];
-
-  const tableHeader = [
-    { id: "id", label: "Id", minWidth: 50 },
-    {
-      id: "client",
-      label: "Name",
-      minWidth: 170,
-      align: "left",
-    },
-    {
-      id: "amount",
-      label: "Amount",
-      minWidth: 120,
-      align: "left",
-    },
-    {
-      id: "date",
-      label: "Date",
-      minWidth: 170,
-      align: "left",
-    },
-    {
-      id: "status",
-      label: "Status",
-      minWidth: 100,
-      align: "left",
-    },
-    {
-      id: "viewBtn",
-      label: "View",
-      minWidth: 170,
-      align: "right",
-    },
-  ];
-
-  function createData(item) {
-    let id = item.orderId;
-    let client = item.client;
-    let amount = item.orderedServerSpec.price;
-    let date = item.orderDate;
-    const status =
-      item.orders.serverUname === "" ? (
-        <Chip
-          variant="outlined"
-          color="error"
-          size="small"
-          label="pending"
-          icon={<FiberManualRecordIcon fontSize="small" />}
-        />
-      ) : (
-        <Chip
-          variant="outlined"
-          color="success"
-          size="small"
-          label="compleated"
-          icon={<FiberManualRecordIcon fontSize="small" />}
-        />
-      );
-    const viewBtn = (
-      <Button
-        variant="contained"
-        onClick={() =>
-          handleBackdropClose(
-            item.orderedServerSpec,
-            item.orders,
-            item.priorBalance
-          )
-        }
-      >
-        View
-      </Button>
-    );
-
-    return { id, client, amount, date, status, viewBtn };
-  }
-
-  useEffect(() => {
-    setRows(
-      AllOrderDetails.map((item) => {
-        const temp = createData(item);
-
-        return temp;
-      })
-    );
-  }, [createData]);
 
   return (
     <>
+      <div>
+        <Modal
+          open={open}
+          // onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <ViewUser
+              closeEvent={handleClose}
+              userData={usersData}
+              userOrders={userOrders}
+            />
+          </Box>
+        </Modal>
+      </div>
+      {/* MainBody */}
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead style={{ backgroundColor: "#d1d1d1" }}>
               <TableRow>
-                {tableHeader.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
+                <TableCell style={{ minWidth: 180 }} align="center">
+                  #
+                </TableCell>
+                <TableCell style={{ minWidth: 120 }} align="left">
+                  Client
+                </TableCell>
+                <TableCell style={{ minWidth: 120 }} align="left">
+                  Contact
+                </TableCell>
+                <TableCell style={{ minWidth: 120 }} align="left">
+                  Email
+                </TableCell>
+                <TableCell style={{ minWidth: 120 }} align="right">
+                  Balance
+                </TableCell>
+                <TableCell style={{ minWidth: 80 }} align="right">
+                  Orders#
+                </TableCell>
+                <TableCell style={{ minWidth: 120 }} align="center">
+                  View
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
-                      {tableHeader.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {value}
-                          </TableCell>
-                        );
-                      })}
+              {usersWithOrders.map((user) =>
+                user.accessType !== "admin" ? (
+                  <>
+                    <TableRow hover role="checkbox" tabIndex={-1} key={user.id}>
+                      <TableCell align="center">{user.userId}</TableCell>
+                      <TableCell align="left">{user.name}</TableCell>
+                      <TableCell align="left">{user.contact}</TableCell>
+                      <TableCell align="left">{user.email}</TableCell>
+                      <TableCell align="right">{user.balance}</TableCell>
+                      <TableCell align="right">
+                        {GetOrdersCount(user.orders)}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            setUsersData(user);
+                            setUserOrders(user.orders);
+                            handleOpen();
+                          }}
+                        >
+                          View
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  );
-                })}
+                  </>
+                ) : null
+              )}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
-      <Box>
-        {usersWithOrders.map((item) => (
-          <>
-            <Typography>userid: {item.userId}</Typography>
-            <Typography>name: {item.name}</Typography>
-            <Typography>email: {item.email}</Typography>
-            <Typography>balance: {item.balance}</Typography>
-            <Box>
-              orders count:{" "}
-              {item.orders.map((val) => (
-                <Typography>orderId: {val.orderId}</Typography>
-              ))}
-            </Box>
-          </>
-        ))}
-      </Box>
-      {/* server username and  password */}
-      <Dialog
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={dilogBoxOpen}
-        onClick={handleBackdropClose}
-      >
-        <ViewBlock />
-      </Dialog>
     </>
   );
 };

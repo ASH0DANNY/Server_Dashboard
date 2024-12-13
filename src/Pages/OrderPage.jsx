@@ -20,6 +20,7 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { auth, db } from "../Firebase";
 import AllOrders from "../components/AllOrders";
+import DashboardFooter from "../components/Footer";
 
 const OrderPage = () => {
   const [userDetails, setUserDetails] = useState(null);
@@ -90,128 +91,119 @@ const OrderPage = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      <Box sx={{ display: "flex" }}>
         <SideNavbar />
         <Box sx={{ flexGrow: 1, p: 3, marginTop: 8 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              marginBottom: 5,
-              bgcolor: "#59a1ff",
-              py: 1,
-              px: 4,
-              borderRadius: 3,
-            }}
-          >
-            {user === "admin" ? `All Orders ${user}` : `Your Orders ${user}`}
-          </Typography>
+          <Box sx={{ minHeight: "75vh" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                marginBottom: 5,
+                bgcolor: "#59a1ff",
+                py: 1,
+                px: 4,
+                borderRadius: 3,
+              }}
+            >
+              {user === "admin" ? `All Clients` : `Your Orders`}
+            </Typography>
 
-          {user === "admin" ? (
-            <>
-              {/* All orders table */}
-              <AllOrders />
-            </>
-          ) : (
-            <>
-              {/* User orders */}
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead style={{ backgroundColor: "#d1d1d1" }}>
-                    <TableRow>
-                      <TableCell style={{ maxWidth: 180 }} align="center">
-                        #
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="center">
-                        Date
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="right">
-                        OrderValue
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="right">
-                        ProductId
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="right">
-                        Status
-                      </TableCell>
-                      <TableCell style={{ minWidth: 180 }} align="right">
-                        S Username
-                      </TableCell>
-                      <TableCell style={{ minWidth: 180 }} align="right">
-                        S Password
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  {userOrders !== null ? (
-                    <TableBody>
-                      {userOrders.map((row) => (
-                        <TableRow
-                          key={row.id}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell align="center">{row.id}</TableCell>
-                          <TableCell align="center">{row.orderDate}</TableCell>
-                          <TableCell align="right">{row.orderValue}</TableCell>
-                          <TableCell align="right">{row.productId}</TableCell>
-                          <TableCell align="right">
-                            {row.serverUname === "" ? (
-                              <Chip
-                                variant="outlined"
-                                color="error"
-                                size="small"
-                                label="pending"
-                                icon={
-                                  <FiberManualRecordIcon fontSize="small" />
-                                }
-                              />
-                            ) : (
-                              <Chip
-                                variant="outlined"
-                                color="success"
-                                size="small"
-                                label="compleated"
-                                icon={
-                                  <FiberManualRecordIcon fontSize="small" />
-                                }
-                              />
-                            )}
-                          </TableCell>
+            {user === "admin" ? (
+              <>
+                {/* All orders table */}
+                <AllOrders />
+              </>
+            ) : (
+              <>
+                {/* User orders */}
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead style={{ backgroundColor: "#d1d1d1" }}>
+                      <TableRow>
+                        <TableCell style={{ maxWidth: 180 }} align="center">
+                          #
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }} align="center">
+                          Date
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }} align="center">
+                          OrderValue
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }} align="center">
+                          ProductId
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }} align="center">
+                          Status
+                        </TableCell>
+                        <TableCell style={{ minWidth: 180 }} align="center">
+                          S Username
+                        </TableCell>
+                        <TableCell style={{ minWidth: 180 }} align="center">
+                          S Password
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    {userOrders !== null ? (
+                      <TableBody>
+                        {userOrders.map((row) => (
+                          <TableRow
+                            key={row.id}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell align="center">{row.id}</TableCell>
+                            <TableCell align="center">
+                              {row.orderDate}
+                            </TableCell>
+                            <TableCell align="center">
+                              {row.orderValue}
+                            </TableCell>
+                            <TableCell align="center">
+                              {row.productId}
+                            </TableCell>
+                            <TableCell align="center">
+                              {row.serverUname === "" ? (
+                                <Chip
+                                  variant="outlined"
+                                  color="error"
+                                  size="small"
+                                  label="pending"
+                                  icon={
+                                    <FiberManualRecordIcon fontSize="small" />
+                                  }
+                                />
+                              ) : (
+                                <Chip
+                                  variant="outlined"
+                                  color="success"
+                                  size="small"
+                                  label="completed"
+                                  icon={
+                                    <FiberManualRecordIcon fontSize="small" />
+                                  }
+                                />
+                              )}
+                            </TableCell>
 
-                          <TableCell align="right">{row.serverUname}</TableCell>
-                          <TableCell align="right">
-                            {row.serverPassword}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  ) : (
-                    <TableBody>No data to show here</TableBody>
-                  )}
-                </Table>
-              </TableContainer>
-            </>
-          )}
-          <Box
-            sx={{
-              mt: 3,
-              width: "100%",
-              bgcolor: "#f2f2f2",
-              height: 60,
-              float: "bottom",
-              p: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "small",
-              wordSpacing: 2,
-              letterSpacing: 2,
-              position: "sticky",
-              bottom: 0,
-            }}
-          >
-            vpsmaster.in &copy; Allright Reserved 2024
+                            <TableCell align="center">
+                              {row.serverUname}
+                            </TableCell>
+                            <TableCell align="center">
+                              {row.serverPassword}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    ) : (
+                      <TableBody>No data to show here</TableBody>
+                    )}
+                  </Table>
+                </TableContainer>
+              </>
+            )}
           </Box>
+          <DashboardFooter />
         </Box>
       </Box>
     </>

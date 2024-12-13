@@ -10,23 +10,15 @@ import {
   TableHead,
   Typography,
 } from "@mui/material";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import React, { useState, useEffect } from "react";
 import SideNavbar from "../components/Sidebar";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-} from "firebase/firestore";
+import DashboardFooter from "../components/Footer";
+import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { auth, db } from "../Firebase";
 import { useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../utils/ConfirmAlert";
@@ -126,251 +118,181 @@ const HomePage = () => {
       <Box sx={{ display: "flex" }}>
         <SideNavbar />
         <Box sx={{ flexGrow: 1, p: 3, marginTop: 8 }}>
-          {/* Confirmation Alert */}
-          <ConfirmationDialog
-            open={isDialogOpen}
-            onClose={handleCloseDialog}
-            onConfirm={handleConfirm}
-            title="Confirmation"
-            message="Are you sure you want to proceed?"
-          />
-          <Typography
-            variant="h6"
-            sx={{
-              marginBottom: 5,
-              bgcolor: "#59a1ff",
-              py: 1,
-              px: 4,
-              borderRadius: 3,
-            }}
-          >
-            Products
-          </Typography>
+          <Box sx={{ minHeight: "75vh" }}>
+            {/* Confirmation Alert */}
+            <ConfirmationDialog
+              open={isDialogOpen}
+              onClose={handleCloseDialog}
+              onConfirm={handleConfirm}
+              title="Confirmation"
+              message="Are you sure you want to proceed?"
+            />
+            <Typography
+              variant="h6"
+              sx={{
+                marginBottom: 5,
+                bgcolor: "#59a1ff",
+                py: 1,
+                px: 4,
+                borderRadius: 3,
+              }}
+            >
+              Products
+            </Typography>
 
-          {/* Products Specification */}
-          {userDetails.accessType === "admin" ? (
-            <>
-              {/* Display For Admin */}
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead style={{ backgroundColor: "#d1d1d1" }}>
-                    <TableRow>
-                      <TableCell style={{ maxWidth: 80 }} align="centre">
-                        #
-                      </TableCell>
-                      <TableCell style={{ minWidth: 200 }} align="left">
-                        Tag
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="right">
-                        Ram
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="right">
-                        Memory
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="right">
-                        Valadity
-                      </TableCell>
-                      <TableCell style={{ minWidth: 150 }} align="right">
-                        Price
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {serverSpecification.map((row) => (
-                      <TableRow
-                        key={row.index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell align="centre">{row.index}</TableCell>
-                        <TableCell align="left">{row.tag}</TableCell>
-                        <TableCell align="right">{row.ram}</TableCell>
-                        <TableCell align="right">{row.memory}</TableCell>
-                        <TableCell align="right">{row.validity}</TableCell>
-                        <TableCell align="right">{row.price}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-              {/* Clients Table */}
-              <Typography
-                variant="h6"
-                sx={{
-                  marginTop: 12,
-                  marginBottom: 5,
-                  bgcolor: "#59a1ff",
-                  py: 1,
-                  px: 4,
-                  borderRadius: 3,
-                }}
-              >
-                All Clients
-              </Typography>
-
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead style={{ backgroundColor: "#d1d1d1" }}>
-                    <TableRow>
-                      <TableCell style={{ maxWidth: 80 }} align="centre">
-                        #
-                      </TableCell>
-                      <TableCell style={{ minWidth: 180 }} align="left">
-                        Name
-                      </TableCell>
-                      <TableCell style={{ minWidth: 200 }} align="left">
-                        Email
-                      </TableCell>
-                      <TableCell style={{ minWidth: 160 }} align="right">
-                        Contact
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="right">
-                        Balance
-                      </TableCell>
-                      <TableCell style={{ minWidth: 100 }} align="right">
-                        Orders
-                      </TableCell>
-                      <TableCell style={{ minWidth: 120 }} align="center">
-                        Edit
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {serverSpecification.map((row) => (
-                      <TableRow
-                        key={row.index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell align="centre">{row.index}</TableCell>
-                        <TableCell align="left">{row.tag}</TableCell>
-                        <TableCell align="left">{row.ram}</TableCell>
-                        <TableCell align="right">{row.memory}</TableCell>
-                        <TableCell align="right">{row.validity}</TableCell>
-                        <TableCell align="right">{row.price}</TableCell>
-                        <TableCell align="center">
-                          <Button
-                            variant="contained"
-                            onClick={() => handleClientEdit()}
-                          >
-                            Edit
-                          </Button>
+            {/* Products Specification */}
+            {userDetails.accessType === "admin" ? (
+              <>
+                {/* Display For Admin */}
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead style={{ backgroundColor: "#d1d1d1" }}>
+                      <TableRow>
+                        <TableCell style={{ maxWidth: 80 }} align="centre">
+                          #
+                        </TableCell>
+                        <TableCell style={{ minWidth: 200 }} align="left">
+                          Tag
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }} align="right">
+                          Ram
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }} align="right">
+                          Memory
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }} align="right">
+                          Valadity
+                        </TableCell>
+                        <TableCell style={{ minWidth: 150 }} align="right">
+                          Price
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </>
-          ) : (
-            <>
-              {/* Display For Users */}
-              <Box
-                sx={{
-                  marginTop: 6,
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                }}
-                gap={3}
-              >
-                {serverSpecification.map((item, index) => (
-                  <Card
-                    key={item.index}
-                    sx={[
-                      {
-                        minWidth: 345,
-                        minHeight: 400,
-                        ":hover": { bgcolor: "#e9d6ff" },
-                      },
-                    ]}
-                  >
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        <Chip
-                          variant="outlined"
-                          color="info"
-                          icon={<BookmarkIcon />}
-                          label={item.tag}
-                        />
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "text.secondary", marginTop: 3 }}
-                      >
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell component="th" scope="row">
-                                Ram
-                              </TableCell>
-                              <TableCell align="right">{item.ram}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell component="th" scope="row">
-                                Memory
-                              </TableCell>
-                              <TableCell align="right">{item.memory}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell component="th" scope="row">
-                                Validity
-                              </TableCell>
-                              <TableCell align="right">
-                                {item.validity}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell component="th" scope="row">
-                                Price
-                              </TableCell>
-                              <TableCell align="right">{item.price}</TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </Typography>
-                    </CardContent>
-                    <CardActions sx={{ justifyContent: "center" }}>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginTop: 3 }}
-                        onClick={() => {
-                          setSeletedproduct(item);
-                          item.price >= userDetails.balance
-                            ? alert("Can't complete your order!! Low Balance")
-                            : handleOpenDialog();
-                        }}
-                      >
-                        Buy Now
-                      </Button>
-                    </CardActions>
-                  </Card>
-                ))}
-              </Box>
-            </>
-          )}
-          <Box
-            sx={{
-              mt: 3,
-              width: "100%",
-              bgcolor: "#f2f2f2",
-              height: 60,
-              p: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "small",
-              wordSpacing: 2,
-              letterSpacing: 2,
-            }}
-          >
-            vpsmaster.in &copy; Allright Reserved 2024
+                    </TableHead>
+                    <TableBody>
+                      {serverSpecification.map((row) => (
+                        <TableRow
+                          key={row.index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell align="centre">{row.index}</TableCell>
+                          <TableCell align="left">{row.tag}</TableCell>
+                          <TableCell align="right">{row.ram}</TableCell>
+                          <TableCell align="right">{row.memory}</TableCell>
+                          <TableCell align="right">{row.validity}</TableCell>
+                          <TableCell align="right">{row.price}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </>
+            ) : (
+              <>
+                {/* Display For Users */}
+                <Box
+                  sx={{
+                    marginTop: 6,
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  }}
+                  gap={3}
+                >
+                  {serverSpecification.map((item, index) => (
+                    <Card
+                      key={item.index}
+                      sx={[
+                        {
+                          minWidth: 345,
+                          minHeight: 400,
+                          p: 2,
+                          ":hover": { bgcolor: "#e9d6ff" },
+                        },
+                      ]}
+                    >
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          <Chip
+                            variant="outlined"
+                            color="info"
+                            icon={<BookmarkIcon />}
+                            label={item.tag}
+                          />
+                        </Typography>
+                        <Typography
+                          sx={{
+                            marginTop: 4,
+                            color: "#858585",
+                            fontSize: "small",
+                          }}
+                        >
+                          Product Id: {item.index}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "text.secondary", marginTop: 2 }}
+                        >
+                          <Table>
+                            <TableBody>
+                              <TableRow>
+                                <TableCell component="th" scope="row">
+                                  Ram
+                                </TableCell>
+                                <TableCell align="right">{item.ram}</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell component="th" scope="row">
+                                  Memory
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.memory}
+                                </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell component="th" scope="row">
+                                  Validity
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.validity}
+                                </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell component="th" scope="row">
+                                  Price
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.price}
+                                </TableCell>
+                              </TableRow>
+                            </TableBody>
+                          </Table>
+                        </Typography>
+                      </CardContent>
+                      <CardActions sx={{ justifyContent: "center" }}>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="primary"
+                          sx={{ marginTop: 3 }}
+                          onClick={() => {
+                            setSeletedproduct(item);
+                            item.price >= userDetails.balance
+                              ? alert("Can't complete your order!! Low Balance")
+                              : handleOpenDialog();
+                          }}
+                        >
+                          Buy Now
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  ))}
+                </Box>
+              </>
+            )}
           </Box>
+          <DashboardFooter />
         </Box>
       </Box>
     </>
