@@ -25,7 +25,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route
-            path="/"
+            path="/Server_Dashboard/"
             element={user ? <Navigate to="/Server_Dashboard/dashboard" /> : <SignUpPage />}
           />
           <Route

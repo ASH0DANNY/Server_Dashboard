@@ -76,7 +76,7 @@ const SignUpPage = () => {
         setUserPassword("");
 
         //Navigate to dashboard
-        navigate("/dashboard");
+        navigate("/Server_Dashboard/dashboard");
       }, 2000);
     } else {
       setAlertMessage("All fields are manditory!!");
@@ -99,7 +99,7 @@ const SignUpPage = () => {
         console.log("Login response:" + response);
 
         //Navigate to dashboard
-        navigate("/dashboard");
+        navigate("/Server_Dashboard/dashboard");
       } catch (error) {
         console.log(error.message);
         setAlertMessage(error.message);
